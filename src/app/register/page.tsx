@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import React, { useState } from "react";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-import { Router } from "next/router";
+import hashPassword from "@/hashPassword";
 
 const prisma = new PrismaClient();
 
@@ -31,7 +31,12 @@ export default function Register() {
         email: email,
         password: password,
       });
-      await axios.post("/api/register", { username, email, password });
+      const hashedPassword = await hashPassword(password);
+      await axios.post("/api/register", {
+        username,
+        email,
+        password: hashedPassword,
+      });
       alert("Register successful!");
       router.push("/");
     } catch (error) {

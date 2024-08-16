@@ -4,6 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import React, { useState } from "react";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const schema = z.object({
   username: z.string().min(5),
@@ -23,8 +24,13 @@ export default function Home() {
         username: username,
         password: password,
       });
-      // await axios.post("/api/login", { username, password });
-      // alert("Register successful!");
+      const isLogin = await axios.get("/api/login", {
+        params: {
+          email: username,
+          password,
+        },
+      });
+      alert(isLogin.data ? "You are logging in" : "Wrong username or password");
       router.push("/");
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -90,9 +96,12 @@ export default function Home() {
               >
                 Login
               </button>
-              <a href="/" className="text-indigo-500 hover:underline">
+              <Link
+                href={"/register"}
+                className="text-indigo-500 hover:underline"
+              >
                 Register
-              </a>
+              </Link>
             </div>
           </div>
         </form>
