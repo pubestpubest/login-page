@@ -24,5 +24,20 @@ services:
     depends_on:
       - postgres
 
+  nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nextjs
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://admin:admin@postgres:5432/mydatabase
+      JWT_SECRET: pubestpubest
+    command: >
+      sh -c "npx prisma migrate deploy && npm run start"
+
 volumes:
   postgres_data:
