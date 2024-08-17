@@ -1,6 +1,5 @@
 "use client";
 import axios from "axios";
-import { PrismaClient } from "@prisma/client";
 import React, { useState } from "react";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
@@ -17,6 +16,7 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const [passwordValid, setPasswordValid] = useState(true);
   const router = useRouter();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -24,12 +24,17 @@ export default function Home() {
         username: username,
         password: password,
       });
-      const isLogin = await axios.post("/api/login", {
+      const response = await axios.post("/api/login", {
         email: username,
         password,
       });
-      alert(isLogin.data ? "You are logging in" : "Wrong username or password");
-      router.push("/");
+      const data = response.data;
+      if (data.success) {
+        localStorage.setItem("token", data.token);
+        router.push("/dashboard");
+      } else {
+        alert(data.message);
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         const errorMessages = error.errors
