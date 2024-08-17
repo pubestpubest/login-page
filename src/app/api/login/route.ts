@@ -2,12 +2,10 @@ import verifyPs from "@/verifyPs";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const email = searchParams.get("email") || "";
-  const password = searchParams.get("password") || "";
+export async function POST(req: Request) {
+  const { email, password } = await req.json();
   try {
-    const user = await prisma.users.findFirst({
+    const user = await prisma.users.findUnique({
       where: {
         email,
       },

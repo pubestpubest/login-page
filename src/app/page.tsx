@@ -24,11 +24,9 @@ export default function Home() {
         username: username,
         password: password,
       });
-      const isLogin = await axios.get("/api/login", {
-        params: {
-          email: username,
-          password,
-        },
+      const isLogin = await axios.post("/api/login", {
+        email: username,
+        password,
       });
       alert(isLogin.data ? "You are logging in" : "Wrong username or password");
       router.push("/");
